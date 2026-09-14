@@ -11,7 +11,7 @@ memory: 16384  # as aubrai-server-prod
 containers:
   - name: aubrai
     # Pinned by the runbook after `.github/workflows/tinfoil-deploy.yml` prints the digest.
-    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.09.15.2@sha256:1a91ce54cea77c0c9d05007744f55c1d75d30c98453c787f980f589c1ba2da94"
+    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.09.15.3@sha256:4aae988609d08f93f364e55c06e4f18db14deb3773ac04ad21593b79c210beba"
     registry:
       username: DobrinAlexandru
       password_secret: GHCR_TOKEN
@@ -64,6 +64,11 @@ containers:
       - FAST_CHAT_RERANK_PROVIDER: "cerebras"
       - FAST_CHAT_RERANK_MODEL: "gemma-4-31b"
       - LITERATURE_HYDE_ENABLED: "true"
+      # Two search steps waited out their full limits on every query (measured 2026-09-14: Europe PMC recovery
+      # 4.0 s, page prequalification 5.0 s, of an ~11 s search). Capped, the search takes 2-5 s and LitQA3
+      # rows 0-19 hit@15 stays at or above the uncapped settings (0.70 uncapped in the same session).
+      - LITERATURE_DEEP_FIRECRAWL_EUROPE_PMC_TIMEOUT_MS: "1500"
+      - FAST_CHAT_FIRECRAWL_PREQUALIFICATION_TIMEOUT_MS: "2000"
       # Private runs may search the literature (Firecrawl, PubMed); the query leaves the enclave for those
       # services, answers stay sealed. Owner's decision for staging (2026-09-14), carried to production.
       - AUBRAI_PRIVATE_LITERATURE: "true"
