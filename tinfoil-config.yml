@@ -1,0 +1,120 @@
+# Tinfoil container configuration — Aubrai harness (production: api.aubr.ai, UI chat.aubr.ai)
+#
+# Copy of record lives in the public config repo VitaDAO/aubrai-harness-prod-tinfoil-config, which is
+# the attestation anchor: the image digest below is pinned by the deploy runbook, never by hand
+# during a review. Secrets are referenced by organization-vault name only.
+
+cvm-version: 0.7.5
+cpus: 2
+memory: 16384  # as aubrai-server-prod
+
+containers:
+  - name: aubrai
+    # Pinned by the runbook after `.github/workflows/tinfoil-deploy.yml` prints the digest.
+    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.09.14.13@sha256:70b0b6111611c39e653fd8280fa86c8cfbbad564050403536b204612bb824afa"
+    registry:
+      username: DobrinAlexandru
+      password_secret: GHCR_TOKEN
+    env:
+      # Non-sensitive configuration (apps/server/src/env.ts is the contract).
+      - NODE_ENV: "production"
+      - HOST: "0.0.0.0"
+      - PORT: "3000"
+      - AUBRAI_STORAGE_ROOT: "/tmp/aubrai"
+      - AUBRAI_KNOWLEDGE_INDEX: "/app/.data/knowledge/index.json"
+      - AUBRAI_KNOWLEDGE_MANIFEST: "/app/docs/inventories/knowledge-nvidia-2026-09-08.json"
+      # Structure-design pipelines need the extended profile to finish.
+      - AUBRAI_RUN_BUDGET: "extended"
+      # Conversations run at once across all accounts; more wait in the queue.
+      - AUBRAI_WORKER_CONCURRENCY: "6"
+      # Production's database is shared with the previous app; the harness lives in its own schema.
+      - DATABASE_SCHEMA: "harness"
+      - ALLOWED_ORIGINS: "https://chat.aubr.ai"
+      # Public Privy application id (also embedded in every browser bundle).
+      - PRIVY_APP_ID: "cmb5myawn00wkjm0m1o77894v"
+      - NVIDIA_MAX_COST_MICROUSD_PER_REQUEST: "250000"
+      - ANALYSIS_MAX_COST_MICROUSD: "500000"
+      # Literature discovery matches production: Firecrawl research index, read back through PubMed.
+      - LITERATURE_RETRIEVAL_PROVIDER: "firecrawl"
+      # The previous app's literature pipeline (packages/legacy-literature) with production's own settings.
+      - FAST_CHAT_LLM_PROVIDER: "cerebras"
+      - FIRECRAWL_WEB_TIMEOUT_MS: "20000"
+      - LITERATURE_BALANCED_FIRECRAWL_TIMEOUT_MS: "20000"
+      - LITERATURE_BALANCED_FIRECRAWL_NUM_RESULTS: "12"
+      - LITERATURE_BALANCED_FIRECRAWL_CONTENTS_TIMEOUT_MS: "12000"
+      - LITERATURE_BALANCED_FIRECRAWL_OVERVIEW_CONTENTS_MAX_URLS: "1"
+      - LITERATURE_DEEP_FIRECRAWL_TIMEOUT_MS: "30000"
+      - LITERATURE_DEEP_FIRECRAWL_CONTENTS_TIMEOUT_MS: "12000"
+      - LITERATURE_DEEP_FIRECRAWL_CONTENTS_MAX_URLS: "5"
+      - LITERATURE_DEEP_FIRECRAWL_MAX_SEARCHES: "3"
+      - LITERATURE_DEEP_FIRECRAWL_WINDOW: "60"
+      - FIRECRAWL_SEARCH_CONCURRENCY: "2"
+      - FIRECRAWL_CONTENTS_CONCURRENCY: "2"
+      - FIRECRAWL_CONTENTS_TOTAL_TIMEOUT_MS: "12000"
+      - FIRECRAWL_CONTENTS_MAX_URLS: "8"
+      - FIRECRAWL_EUROPE_PMC_FULLTEXT_FALLBACK: "true"
+      - FIRECRAWL_EUROPE_PMC_FULLTEXT_MAX_URLS: "4"
+      - LITERATURE_FIRECRAWL_RERANKER: "deterministic"
+      - FIRECRAWL_RETRY_DELAY_MS: "750"
+      - FAST_CHAT_LLM_MODEL: "gemma-4-31b"
+      - FAST_CHAT_HYDE_PROVIDER: "cerebras"
+      - FAST_CHAT_HYDE_MODEL: "gemma-4-31b"
+      - FAST_CHAT_QUERY_REFORMULATE_PROVIDER: "cerebras"
+      - FAST_CHAT_QUERY_REFORMULATE_MODEL: "gemma-4-31b"
+      - FAST_CHAT_RERANK_PROVIDER: "cerebras"
+      - FAST_CHAT_RERANK_MODEL: "gemma-4-31b"
+      - LITERATURE_HYDE_ENABLED: "true"
+      # Private runs may search the literature (Firecrawl, PubMed); the query leaves the enclave for those
+      # services, answers stay sealed. Owner's decision for staging (2026-09-14), carried to production.
+      - AUBRAI_PRIVATE_LITERATURE: "true"
+      # Literature jobs, normal and private, answer on Cerebras Qwen 3.8 27B (owner's decision for staging,
+      # 2026-09-14). A private job's question and papers go to Cerebras in plaintext; stored content and
+      # the caller's result stay sealed. Qwen reasons at length by default, so reasoning is off.
+      - AUBRAI_LITERATURE_PROVIDER: "cerebras"
+      - AUBRAI_PRIVATE_LITERATURE_PROVIDER: "cerebras"
+      - CEREBRAS_MODEL: "qwen-3.8-27b"
+      - CEREBRAS_REASONING_EFFORT: "none"
+      # V4.1 Flash thinks at high effort by default; low answers sooner (trial on staging).
+      - DEEPSEEK_REASONING_EFFORT: "low"
+    secrets:
+      # Registry pull credential
+      - GHCR_TOKEN
+      # PostgreSQL over TLS: administrative (startup migrations, roles, account store) and two least-privilege roles
+      - DATABASE_ADMIN_URL
+      - DATABASE_LOOKUP_URL
+      - DATABASE_WORKER_URL
+      # Private mode. Owner's decision: this deployment shares the previous Aubrai server's
+      # enclave identity and key-wrap secret so it can read that server's encrypted history.
+      # The consequence is deliberate: a compromise here reaches that data too.
+      - HPKE_PRIVATE_KEY
+      - HPKE_PUBLIC_KEY
+      - ENCRYPTION_MASTER_KEY
+      # The previous server's Supabase project, for its read-only history (plain and private)
+      - AUBRAI_SUPABASE_URL
+      - AUBRAI_SUPABASE_SERVICE_KEY
+      # Inference and research tools
+      - DEEPSEEK_API_KEY
+      - TINFOIL_API_KEY
+      - NVIDIA_API_KEY
+      - FIRECRAWL_API_KEY
+      # The previous app's literature helper model (query recovery, HyDE), as in its production.
+      - CEREBRAS_API_KEY
+      # Table analysis (analyze_table): the same remote service production uses
+      - DATA_ANALYSIS_API_URL
+      - DATA_ANALYSIS_API_KEY
+
+shim:
+  upstream-port: 3000
+  # Tinfoil's proxy answers CORS itself and strips the app's own header, so the app's
+  # ALLOWED_ORIGINS alone is not enforced. Listing origins here makes the proxy refuse
+  # any other browser origin (403); requests without an Origin header are unaffected.
+  origins:
+    - https://chat.aubr.ai
+  paths:
+    - /health
+    - /auth/*
+    - /v1/*
+    # The previous Aubrai API's routes (apps/api/src/legacy-*.ts), including the Genome/x402 form routes.
+    - /api/*
+    - /agents/*
+    - /deep-research/*
