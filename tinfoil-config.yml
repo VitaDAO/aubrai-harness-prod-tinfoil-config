@@ -91,12 +91,9 @@ containers:
       - AUBRAI_PRIVATE_LITERATURE_PROVIDER: "cerebras"
       - CEREBRAS_MODEL: "qwen-3.8-27b"
       - CEREBRAS_REASONING_EFFORT: "none"
-      # Encrypted chat answers on the Vita agent model's enclave, verified against its config repository.
-      - AUBRAI_PRIVATE_CHAT_PROVIDER: "vita-model"
-      - VITA_MODEL_ENCLAVE_URL: "https://vita-agent-model.vitality-now.containers.tinfoil.dev"
-      - VITA_MODEL_CONFIG_REPO: "VitaDAO/vita-agent-model-tinfoil-config"
-      - VITA_MODEL_NAME: "fable-distill"
-      - VITA_MODEL_REASONING_EFFORT: "none"
+      # Private chat uses DeepSeek V4.1 Flash through verified hosted Tinfoil.
+      - AUBRAI_PRIVATE_CHAT_PROVIDER: "tinfoil"
+      - TINFOIL_MODEL: "deepseek-v4-1-flash"
       # V4.1 Flash thinks at high effort by default; low answers sooner (trial on staging).
       - DEEPSEEK_REASONING_EFFORT: "low"
     secrets:
