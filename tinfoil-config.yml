@@ -11,7 +11,7 @@ memory: 16384  # as aubrai-server-prod
 containers:
   - name: aubrai
     # Pinned by the runbook after `.github/workflows/tinfoil-deploy.yml` prints the digest.
-    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.09.22.1@sha256:6068e64e65277df8b61b48095d4c2f321d98cefa39da97374dac03285f874c66"
+    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.09.22.4@sha256:8fded53df70c9cdfdc907f514a06a777f63f47434b9acf1a372139432de53a23"
     registry:
       username: DobrinAlexandru
       password_secret: GHCR_TOKEN
@@ -27,6 +27,8 @@ containers:
     env:
       # Non-sensitive configuration (apps/server/src/env.ts is the contract).
       - NODE_ENV: "production"
+      - SENTRY_ENVIRONMENT: "production"
+      - SENTRY_RELEASE: "731ca09c16c73132985815c97e2beab45d3632de"
       - HOST: "0.0.0.0"
       - PORT: "3000"
       - AUBRAI_STORAGE_ROOT: "/tmp/aubrai"
@@ -98,6 +100,7 @@ containers:
       # V4.1 Flash thinks at high effort by default; low answers sooner (trial on staging).
       - DEEPSEEK_REASONING_EFFORT: "low"
     secrets:
+      - AUBRAI_SENTRY_DSN
       # Registry pull credential
       - GHCR_TOKEN
       # PostgreSQL over TLS: administrative (startup migrations, roles, account store) and two least-privilege roles
