@@ -12,9 +12,6 @@ containers:
   - name: aubrai
     # Pinned by the runbook after `.github/workflows/tinfoil-deploy.yml` prints the digest.
     image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.09.22.5@sha256:ee645fced536e446c02d4459711fc20d51595f808b1ea2337c26ca073423d3f8"
-    registry:
-      username: DobrinAlexandru
-      password_secret: GHCR_TOKEN
     # Tinfoil switches a blue-green update's traffic once the new version is healthy. Without this it
     # switched while the server was still migrating (/health 502 for ~13 s at the v2026.09.15.11 switch).
     # The image has no curl, so Node asks the server itself on the port the proxy forwards to.
