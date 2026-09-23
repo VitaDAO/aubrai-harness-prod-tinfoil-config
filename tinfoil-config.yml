@@ -21,7 +21,7 @@ containers:
     tmpfs:
       /tmp: "rw,nosuid,nodev,size=4g,mode=1777"
     # Pinned by the runbook after `.github/workflows/tinfoil-deploy.yml` prints the digest.
-    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.09.23.5@sha256:c3de933ce9fed7d01ee5e1c56911ac9155607479572e185be3adee19ec5895ae"
+    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.09.23.6@sha256:2708cb76cc5d23369621b6d0dfee5ec46ad7f3e99addf59477f2a51a061f11d1"
     # Tinfoil switches a blue-green update's traffic once the new version is healthy. Without this it
     # switched while the server was still migrating (/health 502 for ~13 s at the v2026.09.15.11 switch).
     # The image has no curl, so Node asks the server itself on the port the proxy forwards to.
@@ -35,7 +35,7 @@ containers:
       # Non-sensitive configuration (apps/server/src/env.ts is the contract).
       - NODE_ENV: "production"
       - SENTRY_ENVIRONMENT: "production"
-      - SENTRY_RELEASE: "1afbd418d65d78dd3b4da29226067b19e483bca0"
+      - SENTRY_RELEASE: "352bb0d25eedb0f5ae3b44ad58fb82f0ba54d627"
       - HOST: "0.0.0.0"
       - PORT: "3000"
       - AUBRAI_STORAGE_ROOT: "/tmp/aubrai"
@@ -92,8 +92,8 @@ containers:
       # rows 0-19 hit@15 stays at or above the uncapped settings (0.70 uncapped in the same session).
       - LITERATURE_DEEP_FIRECRAWL_EUROPE_PMC_TIMEOUT_MS: "1500"
       - FAST_CHAT_FIRECRAWL_PREQUALIFICATION_TIMEOUT_MS: "2000"
-      # Private runs may search the literature (Firecrawl, PubMed); the query leaves the enclave for those
-      # services, answers stay sealed. Owner's decision for staging (2026-09-14), carried to production.
+      # Private Fast literature sends questions to Firecrawl and TypeSafe, and abstracts to TypeSafe;
+      # answers stay sealed. Deep literature keeps its existing enrichment path.
       - AUBRAI_PRIVATE_LITERATURE: "true"
       # Normal literature jobs use Cerebras. Private literature answers stay on the verified
       # Tinfoil route. Literature searches and paper reads still use external services.
@@ -128,6 +128,7 @@ containers:
       - TINFOIL_API_KEY
       - NVIDIA_API_KEY
       - FIRECRAWL_API_KEY
+      - TYPESAFE_API_KEY
       # The previous app's literature helper model (query recovery, HyDE), as in its production.
       - CEREBRAS_API_KEY
       # Table analysis (analyze_table): the same remote service production uses
