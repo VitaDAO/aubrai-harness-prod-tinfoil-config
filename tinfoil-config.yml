@@ -21,7 +21,7 @@ containers:
     tmpfs:
       /tmp: "rw,nosuid,nodev,size=4g,mode=1777"
     # Pinned by the runbook after `.github/workflows/tinfoil-deploy.yml` prints the digest.
-    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.09.25.15@sha256:ed557a8d65e1933016c660fe0c178ccc4a248884bbb9a3129fcd92a7dea7e449"
+    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.09.25.16@sha256:5817df5c6c66c6c86f6f41a90650c307688a5267f6d35f3018d80e4492b4b87a"
     # Tinfoil switches a blue-green update's traffic once the new version is healthy. Without this it
     # switched while the server was still migrating (/health 502 for ~13 s at the v2026.09.15.11 switch).
     # The image has no curl, so Node asks the server itself on the port the proxy forwards to.
@@ -35,7 +35,7 @@ containers:
       # Non-sensitive configuration (apps/server/src/env.ts is the contract).
       - NODE_ENV: "production"
       - SENTRY_ENVIRONMENT: "production"
-      - SENTRY_RELEASE: "125ab37a413f34187ee970841abea1e5b3872e90"
+      - SENTRY_RELEASE: "81bc4447a994d7a02fa9d8f26d72ad309587d836"
       - HOST: "0.0.0.0"
       - PORT: "3000"
       - AUBRAI_STORAGE_ROOT: "/tmp/aubrai"
@@ -60,6 +60,9 @@ containers:
       - ANALYSIS_MAX_COST_MICROUSD: "500000"
       # Literature discovery matches production: Firecrawl research index, read back through PubMed.
       - LITERATURE_RETRIEVAL_PROVIDER: "firecrawl"
+      # Public web discovery uses the existing authenticated Railway SearXNG service.
+      # Leave engines unset: service defaults include its working Google CSE engine.
+      - SEARXNG_URL: "https://searxng-production-c545.up.railway.app"
       - PAPER_CORPUS_URL: "https://papercorpus-production.up.railway.app"
       - PAPER_CORPUS_TIMEOUT_MS: "5000"
       - FAILURE_EVIDENCE_URL: "https://web-production-8323f.up.railway.app"
@@ -134,6 +137,7 @@ containers:
       - TINFOIL_API_KEY
       - NVIDIA_API_KEY
       - FIRECRAWL_API_KEY
+      - SEARXNG_PROXY_TOKEN
       - PAPER_CORPUS_API_KEY
       - TYPESAFE_API_KEY
       # The previous app's literature helper model (query recovery, HyDE), as in its production.
