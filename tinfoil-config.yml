@@ -21,7 +21,7 @@ containers:
     tmpfs:
       /tmp: "rw,nosuid,nodev,size=4g,mode=1777"
     # Pinned by the runbook after `.github/workflows/tinfoil-deploy.yml` prints the digest.
-    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.09.25.12@sha256:1d6610359d1a7922390e7e9a47cb149fd3a6c0271711294cfe7b3d72d9d164ee"
+    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.09.25.13@sha256:e09f8e9704bec73dca768298f69bbc42d98eaf71cc9b71e2d4d6e1216ec9a02c"
     # Tinfoil switches a blue-green update's traffic once the new version is healthy. Without this it
     # switched while the server was still migrating (/health 502 for ~13 s at the v2026.09.15.11 switch).
     # The image has no curl, so Node asks the server itself on the port the proxy forwards to.
@@ -35,7 +35,7 @@ containers:
       # Non-sensitive configuration (apps/server/src/env.ts is the contract).
       - NODE_ENV: "production"
       - SENTRY_ENVIRONMENT: "production"
-      - SENTRY_RELEASE: "1bb768e1e6b7e13394de105cc31a3074c37eddd7"
+      - SENTRY_RELEASE: "32604814541841b31b873f4c603f1a85469e2ec2"
       - HOST: "0.0.0.0"
       - PORT: "3000"
       - AUBRAI_STORAGE_ROOT: "/tmp/aubrai"
@@ -62,6 +62,8 @@ containers:
       - LITERATURE_RETRIEVAL_PROVIDER: "firecrawl"
       - PAPER_CORPUS_URL: "https://papercorpus-production.up.railway.app"
       - PAPER_CORPUS_TIMEOUT_MS: "5000"
+      - FAILURE_EVIDENCE_URL: "https://web-production-8323f.up.railway.app"
+      - FAILURE_EVIDENCE_TIMEOUT_MS: "5000"
       # The previous app's literature pipeline (packages/legacy-literature) with production's own settings.
       - FAST_CHAT_LLM_PROVIDER: "cerebras"
       - FIRECRAWL_WEB_TIMEOUT_MS: "20000"
