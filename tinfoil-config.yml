@@ -21,7 +21,7 @@ containers:
     tmpfs:
       /tmp: "rw,nosuid,nodev,size=4g,mode=1777"
     # Pinned by the runbook after `.github/workflows/tinfoil-deploy.yml` prints the digest.
-    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.09.28.11@sha256:8c4b8cee7c66bb179d5cf68b4b91a3ecf19c298cd718cbc55f0eb59d5e0efad5"
+    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.09.29.1@sha256:15efbcbd3eeebb7e4f32bb35176727656c4b67ee405880a04df2f6dc94d0046a"
     # Tinfoil switches a blue-green update's traffic once the new version is healthy. Without this it
     # switched while the server was still migrating (/health 502 for ~13 s at the v2026.09.15.11 switch).
     # The image has no curl, so Node asks the server itself on the port the proxy forwards to.
@@ -35,7 +35,7 @@ containers:
       # Non-sensitive configuration (apps/server/src/env.ts is the contract).
       - NODE_ENV: "production"
       - SENTRY_ENVIRONMENT: "production"
-      - SENTRY_RELEASE: "bb0e19d1265048d68da1f3c8b7a6036118623594"
+      - SENTRY_RELEASE: "7e0fb59cdb24a8de611642f1d6ce1ee167f94da1"
       - HOST: "0.0.0.0"
       - PORT: "3000"
       - AUBRAI_STORAGE_ROOT: "/tmp/aubrai"
@@ -61,7 +61,7 @@ containers:
       # Literature discovery matches production: Firecrawl research index, read back through PubMed.
       - LITERATURE_RETRIEVAL_PROVIDER: "firecrawl"
       # Public web discovery uses the existing authenticated Railway SearXNG service.
-      # Leave engines unset: service defaults include its working Google CSE engine.
+      # Leave engines unset to use the configured free engines; availability is checked per request.
       - SEARXNG_URL: "https://searxng-production-c545.up.railway.app"
       - PAPER_CORPUS_URL: "https://papercorpus-production.up.railway.app"
       - PAPER_CORPUS_TIMEOUT_MS: "5000"
