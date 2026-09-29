@@ -21,7 +21,7 @@ containers:
     tmpfs:
       /tmp: "rw,nosuid,nodev,size=4g,mode=1777"
     # Pinned by the runbook after `.github/workflows/tinfoil-deploy.yml` prints the digest.
-    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.09.29.8@sha256:96ac2011c4b84dd92354869f327408d23f4fa7c92936eb7f417af90760029ad3"
+    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.09.29.9@sha256:3f27121212b1f3acaa02c6b939d9eb967cf32eadedd0c0267e8fb734b027b82c"
     # Tinfoil switches a blue-green update's traffic once the new version is healthy. Without this it
     # switched while the server was still migrating (/health 502 for ~13 s at the v2026.09.15.11 switch).
     # The image has no curl, so Node asks the server itself on the port the proxy forwards to.
