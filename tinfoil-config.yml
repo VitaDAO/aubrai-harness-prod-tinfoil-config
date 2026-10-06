@@ -21,7 +21,7 @@ containers:
     tmpfs:
       /tmp: "rw,nosuid,nodev,size=4g,mode=1777"
     # Pinned by the runbook after `.github/workflows/tinfoil-deploy.yml` prints the digest.
-    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.10.05.2@sha256:84887df089acd30490d1b32bcee32ce2b9da18766f3129b90f2d3babc9c557d3"
+    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.10.06.1@sha256:8484a817f9622209664ab1be1dd626fe4ec2adf864c666a853732bbb7244aeb2"
     # Tinfoil switches a blue-green update's traffic once the new version is healthy. Without this it
     # switched while the server was still migrating (/health 502 for ~13 s at the v2026.09.15.11 switch).
     # The image has no curl, so Node asks the server itself on the port the proxy forwards to.
@@ -35,7 +35,7 @@ containers:
       # Non-sensitive configuration (apps/server/src/env.ts is the contract).
       - NODE_ENV: "production"
       - SENTRY_ENVIRONMENT: "production"
-      - SENTRY_RELEASE: "1e10868f2a14d99166cf9a88af3e408172913055"
+      - SENTRY_RELEASE: "dffa5223c9da1e337a446642e7168a8ed807da1c"
       - HOST: "0.0.0.0"
       - PORT: "3000"
       - AUBRAI_STORAGE_ROOT: "/tmp/aubrai"
