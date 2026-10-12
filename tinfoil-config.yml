@@ -39,6 +39,9 @@ containers:
       - HOST: "0.0.0.0"
       - PORT: "3000"
       - AUBRAI_STORAGE_ROOT: "/tmp/aubrai"
+      # Normal-mode default route (user decision 2026-10-12); private runs stay on the Tinfoil route.
+      - AUBRAI_DEFAULT_PROVIDER: "claude-haiku"
+      - ANTHROPIC_REASONING_EFFORT: "medium"
       # The DeepSeek account is checked this often; an operator alert fires under the USD threshold.
       - DEEPSEEK_BALANCE_CHECK_MINUTES: "30"
       - DEEPSEEK_LOW_BALANCE_USD: "3"
@@ -139,6 +142,9 @@ containers:
       - AUBRAI_SUPABASE_SERVICE_KEY
       # Inference and research tools
       - DEEPSEEK_API_KEY
+      # Claude Haiku route (normal mode only); the key is not workspace-scoped, the id is sent as a header.
+      - ANTHROPIC_API_KEY
+      - ANTHROPIC_WORKSPACE_ID
       - TINFOIL_API_KEY
       - NVIDIA_API_KEY
       - FIRECRAWL_API_KEY
