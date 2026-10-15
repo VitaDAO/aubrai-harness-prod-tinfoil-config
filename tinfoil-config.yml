@@ -125,6 +125,7 @@ containers:
       # Codex engine (Alex 2026-10-15): runs inside the enclave as a child of the worker.
       - CODEX_SANDBOX: "local"
       - CODEX_SANDBOX_LOCAL_TRUSTED: "1"
+      - ENGINE: "codex"
     secrets:
       - AUBRAI_SENTRY_DSN
       # Registry pull credential
