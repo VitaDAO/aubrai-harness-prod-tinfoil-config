@@ -122,6 +122,9 @@ containers:
       - TINFOIL_MODEL: "deepseek-v4-1-flash"
       # V4.1 Flash thinks at high effort by default; low answers sooner (trial on staging).
       - DEEPSEEK_REASONING_EFFORT: "low"
+      # Codex engine (Alex 2026-10-15): runs inside the enclave as a child of the worker.
+      - CODEX_SANDBOX: "local"
+      - CODEX_SANDBOX_LOCAL_TRUSTED: "1"
     secrets:
       - AUBRAI_SENTRY_DSN
       # Registry pull credential
@@ -156,6 +159,10 @@ containers:
       # Table analysis (analyze_table): the same remote service production uses
       - DATA_ANALYSIS_API_URL
       - DATA_ANALYSIS_API_KEY
+      # Codex engine: its own spend-capped DeepSeek key, tool-token HMAC, session encryption
+      - CODEX_DEEPSEEK_API_KEY
+      - CODEX_TOOL_TOKEN_SECRET
+      - CODEX_SESSION_ENC_KEY
 
 shim:
   upstream-port: 3000
