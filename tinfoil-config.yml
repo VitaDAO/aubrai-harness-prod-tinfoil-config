@@ -180,3 +180,5 @@ shim:
     - /api/*
     - /agents/*
     - /deep-research/*
+    # Account API key routes (apps/api/src/account-api-keys.ts) used by the web Account page.
+    - /account/*
