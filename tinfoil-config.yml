@@ -175,6 +175,8 @@ shim:
   paths:
     - /health
     - /auth/*
+    # Account API key routes (/account/api-keys and its revoke endpoints).
+    - /account/*
     - /v1/*
     # The previous Aubrai API's routes (apps/api/src/legacy-*.ts), including the Genome/x402 form routes.
     - /api/*
