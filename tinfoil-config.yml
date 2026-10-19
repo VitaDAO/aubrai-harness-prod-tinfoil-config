@@ -21,7 +21,7 @@ containers:
     tmpfs:
       /tmp: "rw,nosuid,nodev,size=4g,mode=1777"
     # Pinned by the runbook after `.github/workflows/tinfoil-deploy.yml` prints the digest.
-    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.10.16.3@sha256:649cb921a02f4625c02e19564606ce71affb2286a96ca3521a9e47799e5d4f1f"
+    image: "ghcr.io/vitadao/aubrai-harness:tinfoil-v2026.10.19.1@sha256:6fc49661a415285ac7327a60642afa1c0e8858d2b452049f747ba0c6f01c2133"
     # Tinfoil switches a blue-green update's traffic once the new version is healthy. Without this it
     # switched while the server was still migrating (/health 502 for ~13 s at the v2026.09.15.11 switch).
     # The image has no curl, so Node asks the server itself on the port the proxy forwards to.
@@ -35,12 +35,12 @@ containers:
       # Non-sensitive configuration (apps/server/src/env.ts is the contract).
       - NODE_ENV: "production"
       - SENTRY_ENVIRONMENT: "production"
-      - SENTRY_RELEASE: "758e6d25de15b5132332dba703624d2d94b18bdb"
+      - SENTRY_RELEASE: "18f5f5d1989bae1587470b556b867b6083546aeb"
       - HOST: "0.0.0.0"
       - PORT: "3000"
       - AUBRAI_STORAGE_ROOT: "/tmp/aubrai"
       # Normal-mode default route (user decision 2026-10-12); private runs stay on the Tinfoil route.
-      - AUBRAI_DEFAULT_PROVIDER: "claude-haiku"
+      - AUBRAI_DEFAULT_PROVIDER: "deepseek-flash"
       - ANTHROPIC_REASONING_EFFORT: "medium"
       # The DeepSeek account is checked this often; an operator alert fires under the USD threshold.
       - DEEPSEEK_BALANCE_CHECK_MINUTES: "30"
@@ -113,7 +113,7 @@ containers:
       - AUBRAI_PRIVATE_LITERATURE: "true"
       # Normal literature jobs use Cerebras. Private literature answers stay on the verified
       # Tinfoil route. Literature searches and paper reads still use external services.
-      - AUBRAI_LITERATURE_PROVIDER: "cerebras"
+      - AUBRAI_LITERATURE_PROVIDER: "deepseek-flash"
       - AUBRAI_PRIVATE_LITERATURE_PROVIDER: "tinfoil"
       - CEREBRAS_MODEL: "qwen-3.8-27b"
       - CEREBRAS_REASONING_EFFORT: "none"
